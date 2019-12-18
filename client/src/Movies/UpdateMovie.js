@@ -14,30 +14,35 @@ const UpdateMovie = props => {
     const [movie, setMovie] = useState(initialMovie)
 
     useEffect(() => {
-        const movieToEdit = props.movies.find(item => `${item.id}` === props.match.params.id)
-        if(movieToEdit){
-            setMovie(movieToEdit)
-        }
-    },[props.movies, props.match.params.id])
+        axios.get(`http://localhost:5000/api/movies/${props.match.params.id}`)
+        .then(response => {
+            setMovie(response.data)
+        })
+        .catch(error => {
+            console.log(error)
+        })
+    },[props.match.params.id])
 
     const handleChanges = event => {
-        event.persist();
-        let value = event.target.value;
-        if(event.target.value === "metascore") {
-            value = parseInt(value, 10);
-        }
         setMovie({
             ...movie,
-            [event.target.name]: value
+            [event.target.name]: event.target.value
+        })
+    }
+
+    const handleStars = event => {
+        setMovie({
+            ...movie,
+            stars: [event.target.value]
         })
     }
 
     const handleSubmit = event => {
         event.preventDefault();
-        axios.put(`http://localhost:5000/api/movies/${movie.id}`, movie)
+        axios.put(`http://localhost:5000/api/movies/${props.match.params.id}`, movie)
         .then(response => {
             console.log(response)
-            props.setMovies(response.data)
+            setMovie(response.data)
             props.history.push(`/movies/${movie.id}`)
         })
         .catch(error => {
@@ -56,6 +61,7 @@ const UpdateMovie = props => {
                 onChange={handleChanges}
                 placeholder = "Title"
                 />
+                <br />
                 <input 
                 type="text"
                 name="director"
@@ -63,6 +69,7 @@ const UpdateMovie = props => {
                 onChange={handleChanges}
                 placeholder="Director"
                 />
+                <br />
                 <input 
                 type="num"
                 name="metascore"
@@ -70,13 +77,15 @@ const UpdateMovie = props => {
                 onChange={handleChanges}
                 placeholder="Metascore"
                 />
+                <br />
                 <input 
                 type="text"
                 name="stars"
                 value={movie.stars}
-                onChange={handleChanges}
+                onChange={handleStars}
                 placeholder="Stars"
                 />
+                <br />
             <button>Save Changes</button>
             </form>
         </div>
