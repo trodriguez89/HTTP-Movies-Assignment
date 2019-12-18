@@ -1,19 +1,17 @@
 import React, {useState, useEffect} from "react";
-import Axios from "axios";
+import axios from "axios";
 
-// const initialMovie = {
-//     title: "",
-//     director: "",
+const initialMovie = {
+    id: "",
+    title: "",
+    director: "",
+    metascore: "",
+    stars: []
 
-// }
+}
 
 const UpdateMovie = props => {
-    const [movie, setMovie] = useState({
-        title: "",
-        director: "",
-        metascore: 0,
-        stars: []
-    })
+    const [movie, setMovie] = useState(initialMovie)
 
     useEffect(() => {
         const movieToEdit = props.movies.find(item => `${item.id}` === props.match.params.id)
@@ -23,18 +21,34 @@ const UpdateMovie = props => {
     },[props.movies, props.match.params.id])
 
     const handleChanges = event => {
+        event.persist();
+        let value = event.target.value;
+        if(event.target.value === "metascore") {
+            value = parseInt(value, 10);
+        }
         setMovie({
-            [event.target.name]: event.target.value
+            ...movie,
+            [event.target.name]: value
         })
     }
 
     const handleSubmit = event => {
-
+        event.preventDefault();
+        axios.put(`http://localhost:5000/api/movies/${movie.id}`, movie)
+        .then(response => {
+            console.log(response)
+            props.setMovies(response.data)
+            props.history.push(`/movies/${movie.id}`)
+        })
+        .catch(error => {
+            console.log(error)
+            
+        })
     }
 
     return (
         <div>
-            <form>
+            <form onSubmit = {handleSubmit}>
                 <input 
                 type="text"
                 name="title"
