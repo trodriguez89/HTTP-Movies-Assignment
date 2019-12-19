@@ -1,17 +1,26 @@
 import React, {useState, useEffect} from "react";
 import axios from "axios";
+import styled from "styled-components";
 
-const initialMovie = {
-    id: "",
-    title: "",
-    director: "",
-    metascore: "",
-    stars: []
 
-}
+const FormStyle = styled.div`
+    margin: 0 auto;
+    text-align: center;
+`
+
+const Button = styled.button`
+    margin-top: 5px;
+    padding: 5px;
+`
 
 const UpdateMovie = props => {
-    const [movie, setMovie] = useState(initialMovie)
+    const [movie, setMovie] = useState({
+        title: "",
+        director: "",
+        metascore: "",
+        stars: []
+    })
+
 
     useEffect(() => {
         axios.get(`http://localhost:5000/api/movies/${props.match.params.id}`)
@@ -52,7 +61,8 @@ const UpdateMovie = props => {
     }
 
     return (
-        <div>
+        <FormStyle>
+            <h1>Edit Movie Info</h1>
             <form onSubmit = {handleSubmit}>
                 <input 
                 type="text"
@@ -86,9 +96,9 @@ const UpdateMovie = props => {
                 placeholder="Stars"
                 />
                 <br />
-            <button>Save Changes</button>
+            <Button>Save Changes</Button>
             </form>
-        </div>
+        </FormStyle>
     )
 }
 

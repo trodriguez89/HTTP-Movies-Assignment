@@ -2,6 +2,17 @@ import React from "react";
 import axios from "axios";
 import MovieCard from "./MovieCard";
 
+import styled from "styled-components";
+
+const EditButton = styled.button`
+  padding: 5px;
+`
+
+const DeleteButton = styled.button`
+  margin-left: 5px;
+  padding: 5px;
+
+`
 
 export default class Movie extends React.Component {
   constructor(props) {
@@ -62,8 +73,8 @@ export default class Movie extends React.Component {
         <div className="save-button" onClick={this.saveMovie}>
           Save
         </div>
-       <button onClick={() => this.props.history.push(`/update_movie/${this.state.movie.id}`)}>Edit</button>
-       <button onClick={this.handleDelete}>Delete</button>
+       <EditButton onClick={() => this.props.history.push(`/update_movie/${this.state.movie.id}`)}>Edit</EditButton>
+       <DeleteButton onClick={this.handleDelete}>Delete</DeleteButton>
       </div>
     );
   }
